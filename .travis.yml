@@ -1,0 +1,36 @@
+branches:
+  only:
+    - master
+    - 1.0.0
+
+language: bash
+
+services:
+  - docker
+
+git:
+  submodules: false
+
+before_install:
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' .gitmodules
+  - git submodule update --init
+  - sed -i 's/git@github.com:/https:\/\/github.com\//' www/.gitmodules
+  - cd www
+  - git submodule update --init
+  - cd ..
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+
+before_script:
+  - repo=gvirtu/tupyonline
+  - builddate=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  - buildrev=$(git rev-parse --short HEAD)
+
+script:
+  - docker build --build-arg VCS_REF=$buildrev --build-arg BUILD_DATE=$builddate -t $repo .
+  - docker run --rm $repo python3 -m tupy -h
+
+after_success:
+  - tag=$(docker run --rm $repo /bin/sh -c 'echo $TUPYONLINE_VERSION')
+  - docker tag $repo $repo:$tag
+  - docker push $repo:latest
+  - docker push $repo:$tag
