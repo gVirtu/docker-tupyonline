@@ -1,7 +1,6 @@
 branches:
-  only:
+  except:
     - master
-    - 1.0.0
 
 language: bash
 
