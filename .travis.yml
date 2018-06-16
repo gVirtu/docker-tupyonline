@@ -1,3 +1,6 @@
+dist: trusty
+sudo: required
+
 branches:
   except:
     - master
@@ -20,16 +23,12 @@ before_install:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
 
 before_script:
-  - repo=gvirtu/tupyonline
-  - builddate=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-  - buildrev=$(git rev-parse --short HEAD)
+  - source ./config.sh
 
-script:
-  - docker build --build-arg VCS_REF=$buildrev --build-arg BUILD_DATE=$builddate -t $repo .
-  - docker run --rm $repo python3 -m tupy -h
+script: ./build.sh
 
 after_success:
-  - tag=$(docker run --rm $repo /bin/sh -c 'echo $TUPYONLINE_VERSION')
-  - docker tag $repo $repo:$tag
-  - docker push $repo:latest
-  - docker push $repo:$tag
+  - tag=$(docker run --rm $REPO /bin/sh -c 'echo $TUPYONLINE_VERSION')
+  - docker tag $REPO $REPO:$tag
+  - docker push $REPO:latest
+  - docker push $REPO:$tag

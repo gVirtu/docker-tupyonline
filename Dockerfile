@@ -1,7 +1,7 @@
 FROM python:3.6.5-alpine3.6
 
 LABEL maintainer="Giancarlo De Roberto <giandroberto@gmail.com>"
-ENV TUPYONLINE_VERSION=1.0.1
+ENV TUPYONLINE_VERSION=1.0.2
 
 WORKDIR /opt/app
 
