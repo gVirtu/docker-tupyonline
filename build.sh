@@ -16,7 +16,7 @@ docker run --rm \
             -w /opt/app \
             -t tupy-docker \
             sh -c "yarn install; \
-                   ./node_modules/.bin/tsd install; \
+                   ./node_modules/.bin/typings install; \
                    pip3 install --user -r requirements.txt; \
                    ./node_modules/.bin/webpack --config webpack.config.js --mode production;
                    echo \"Done building. Setting owner to $HOST_UID:$HOST_GID\";
